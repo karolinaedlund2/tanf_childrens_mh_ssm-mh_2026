@@ -1,0 +1,292 @@
+================================================================================
+CODEBOOK: ANALYTIC VARIABLES
+================================================================================
+
+Full title: Temporary Assistance for Needy Families and Children's Mental Health:
+            Evidence from the National Survey of Children's Health (2016-2022)
+
+Short title:      TANF and Children's Mental Health
+Prepared for:     Revise and resubmit, SSM - Mental Health
+Article type:     Full Length Article
+Section:          Psychiatric Epidemiology and Population Mental Health Science
+Keywords:         Children's mental health, social determinants, economic policies
+
+Authors:          Karolina M. Edlund, MS
+                  Nolan M. Kavanagh, MD, PhD, MPH
+                  Vinicius Prado, MA
+                  Rachael A. Lennon, PhD, MPA
+                  Natalie Slopen, ScD, MA
+
+Datasets: TANF_master.xlsx (primary, 1-year lagged exposure),
+          TANF_master_concurrent.xlsx (0-year lag),
+          TANF_master_2yrlag.xlsx (2-year lag)
+          All three share the variables below; only the timing of maxben_3fam differs.
+
+Unit of observation: one child (NSCH selected child), survey years 2016-2022.
+
+Analytic sample: children aged 3-17 in lower-income households with complete
+data on all analytic variables (see Figure 1).
+
+Reference levels are the first factor level, as set in TANF_datamngmt3.
+
+Please direct any questions to: karolinaedlund@hsph.harvard.edu
+
+================================================================================
+1. IDENTIFIERS AND TIME
+================================================================================
+
+fipsst
+  Description:  State FIPS code (50 states + DC; 51 levels)
+  Type:         Numeric/categorical identifier
+  Source:       NSCH
+  Used in:      State fixed effects; clustering of standard errors; merging
+                state-level exposure and covariates
+
+year
+  Description:  NSCH survey year
+  Type:         Numeric/categorical (2016-2022)
+  Source:       NSCH
+  Used in:      Year fixed effects; merging state-year exposure and covariates
+
+hhid
+  Description:  NSCH household identifier
+  Type:         Identifier
+  Source:       NSCH
+  Used in:      Primary sampling unit in the complex survey design
+                (Supp. Table 4)
+
+
+================================================================================
+2. SURVEY DESIGN VARIABLES
+================================================================================
+
+stratum
+  Description:  Original NSCH sampling stratum
+  Values:       "1", "2", "2A"
+  Source:       NSCH
+
+strata
+  Description:  Redefined sampling stratum for multi-year analyses, per NSCH
+                guidance
+  Values:       "1" = stratum 1; "2" = strata 2 and 2A combined
+  Derived from: stratum
+
+stratacross
+  Description:  State x stratum interaction used as the strata variable in the
+                complex survey design
+  Values:       102 levels (51 states x 2 strata)
+  Derived from: fipsst, strata
+  Used in:      Supp. Table 4 only
+
+fwc
+  Description:  NSCH selected-child weight (topical survey)
+  Type:         Continuous
+  Source:       NSCH
+
+weights
+  Description:  Analysis weight: fwc rescaled to mean = 1 (equivalent up to a
+                constant to fwc divided by 7 combined survey years, per NSCH
+                multi-year guidance)
+  Type:         Continuous
+  Derived from: fwc
+  Used in:      All weighted models and descriptive statistics
+
+
+================================================================================
+3. EXPOSURE
+================================================================================
+
+maxben_3fam
+  Description:  State maximum monthly TANF cash benefit for a family of three
+  Type:         Continuous
+  Units:        USD 100 per month in TANF_master (divided by 100 so that
+                coefficients correspond to a $100 increase); maxben_merged
+                stores USD per month
+  Timing:       Lagged 1 year in TANF_master (e.g., 2015 benefits linked to
+                2016 survey year); concurrent in TANF_master_concurrent;
+                lagged 2 years in TANF_master_2yrlag
+  Source:       Urban Institute Welfare Rules Database
+  Notes:        Rows for CA, MA, and WI collapsed across Nonexempt vs. Exempt
+                categories based on guidance from the Urban Institute
+
+
+================================================================================
+4. OUTCOMES
+================================================================================
+
+All outcomes are binary (0/1), parent/caregiver reported, and based on
+whether a doctor or other health care provider ever told the caregiver the
+child has the condition (item "a") and whether the child currently has it
+(item "b"). Models are linear probability models; coefficients are reported
+in percentage points per 1 unit ($100) increase in maxben_3fam.
+
+anxiety
+  Description:  Current diagnosed anxiety
+  NSCH items:   k2q33a (ever told), k2q33b (currently has)
+  Values:       1 = currently has (k2q33b = 1); 0 = does not currently have
+                or never told
+
+depression
+  Description:  Current diagnosed depression
+  NSCH items:   k2q32a, k2q32b
+  Values:       1 = currently has; 0 = does not currently have or never told
+
+adhd
+  Description:  Current diagnosed ADD/ADHD
+  NSCH items:   k2q31a, k2q31b
+  Values:       1 = currently has; 0 = does not currently have or never told
+
+bx_problems
+  Description:  Current diagnosed behavioral or conduct problems
+  NSCH items:   k2q34a, k2q34b
+  Values:       1 = currently has; 0 = does not currently have or never told
+
+anxiety_severity     (NSCH item k2q33c)
+depression_severity  (NSCH item k2q32c)
+adhd_severity        (NSCH item k2q31c)
+bxprobs_severity     (NSCH item k2q34c)
+  Description:  Current moderate or severe diagnosed condition
+                (Supp. Table 6)
+  Values:       1 = currently has, rated moderate or severe (item "c" = 2 or
+                3); 0 = currently has but mild, does not currently have, or
+                never told (children without the condition are coded 0, not
+                missing)
+
+
+================================================================================
+5. INDIVIDUAL-LEVEL COVARIATES
+================================================================================
+
+age
+  Description:  Child age in years
+  Type:         Continuous (3-17 in analytic sample)
+  NSCH item:    sc_age_years
+
+age_group
+  Description:  Three-level child age group (descriptive)
+  Values:       "3-5 years"; "6-11 years"; "12-17 years"
+  Derived from: age
+
+age_group_bin
+  Description:  Child age group (effect modifier, Supp. Table 5)
+  Values:       "3-11 years" (reference); "12-17 years"
+  Derived from: age
+
+sex
+  Description:  Child sex
+  Values:       "Male" (reference); "Female"
+  NSCH item:    sc_sex (1 = Male, 2 = Female)
+
+race_ethnicity
+  Description:  Child race/ethnicity
+  Values:       "American Indian or Alaska Native" (reference);
+                "Asian, Native Hawaiian, or Pacific Islander";
+                "Black or African American"; "Hispanic/Latino"; "White";
+                "Other or mixed race"
+  NSCH items:   sc_hispanic_r, sc_race_r
+  Notes:        Hispanic/Latino children of any race are coded
+                "Hispanic/Latino"; all other categories are non-Hispanic
+
+race_ethnicity_bin
+  Description:  Binary race/ethnicity (effect modifier, Supp. Table 5)
+  Values:       "White" (non-Hispanic white; reference); "Non-white" (all
+                other children)
+  Derived from: race_ethnicity
+  Notes:        Models among non-white children additionally adjust for
+                race_ethnicity
+
+nativity
+  Description:  Household nativity
+  Values:       "Child and or parent born out of US" (reference);
+                "Child born in US, parent data missing";
+                "Child and parent born in US"
+  NSCH item:    house_gen (1-2; 4; 3, respectively)
+
+fam_structure
+  Description:  Family structure
+  Values:       "Two parents, married" (reference); "Two parents, not
+                married"; "Single parent"; "Another family structure"
+  NSCH items:   family, family_r
+
+adult_edu
+  Description:  Highest educational attainment of adults in household
+  Values:       "Less than high school" (reference); "High school (including
+                vocational)"; "Some college or associate degree"; "College
+                degree or higher"
+  NSCH item:    higrade_tvis (1-4)
+
+low_income
+  Description:  Household income category used to define the analytic sample
+  Values:       "Lower-income" (<200% of the federal poverty level);
+                "Higher-income" (>=200% FPL)
+  NSCH items:   fpl (earlier survey years) or fpl_mean, the mean of the six
+                imputed FPL values fpl_i1-fpl_i6 (later survey years)
+  Used in:      Sample restriction only
+
+
+================================================================================
+6. STATE-LEVEL COVARIATES
+================================================================================
+
+state_minwage
+  Description:  State minimum wage
+  Units:        USD per hour; nominal, inflation-adjusted
+  Source:       University of Kentucky Center for Poverty Research, National
+                Welfare Data (UKCPR_complete)
+
+percent_1to5
+  Description:  State Medicaid income eligibility limit for children ages 1-5
+  Units:        Percent of the federal poverty level
+  Source:       Kaiser Family Foundation
+
+percent_6to18
+  Description:  State Medicaid income eligibility limit for children ages 6-18
+  Units:        Percent of the federal poverty level
+  Source:       Kaiser Family Foundation
+
+eitc_3level
+  Description:  State earned income tax credit status
+  Values:       No state EITC; nonrefundable state EITC; refundable state EITC
+  Source:       Urban Institute and Brookings Institution Tax Policy Center
+
+
+================================================================================
+7. DERIVED VARIABLES CREATED IN THE ANALYSIS SCRIPT
+   (not stored in TANF_master; created in Supp. Table 8 section)
+================================================================================
+
+G
+  Description:  NSCH survey year of each state's first TANF benefit increase
+  Values:       2017-2022 (because of 1-year lag, actually 2016-2021 benefit years); 0 = never increased
+
+G2
+  Description:  NSCH survey year of each state's second benefit increase
+  Values:       Year; Inf = no second increase
+  Notes:        Computed for reference; not used in estimation
+
+D_first
+  Description:  Size of each state's first benefit increase (main dose)
+  Values:       0 for never-increased states
+
+D_total
+  Description:  Total benefit change between the 2016 and 2022 survey years
+                (because of 1-year lag, actually 2015-2021 benefit years); long-difference dose
+
+untreated
+  Description:  Indicator for child-years untreated at the time of survey
+  Values:       TRUE = never-increased state, or survey year before the
+                state's first increase
+
+y_adj
+  Description:  Outcome residualized on individual- and state-level
+                covariates, using coefficients estimated among untreated
+                observations with state and year fixed effects (two-stage DiD
+                covariate adjustment)
+
+Y
+  Description:  Weighted state-year mean of y_adj (panel outcome for contdid
+                and did)
+
+state_wt
+  Description:  State's average weighted child count across years, normalized
+                to mean = 1; used as a weight in the did event study only
